@@ -1,0 +1,225 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LOL Stats API",
+        "description": "An API to cache and watch stats on League of Legends game.",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/summoners": {
+            "get": {
+                "tags": ["summoner"],
+                "operationId": "getSummoners",
+                "summary": "Get collection of watched summoners.",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Summoner"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "postSummoner",
+                "summary": "Create a new summoner if exist in Riot API.",
+                "tags": ["summoner"],
+                "requestBody": {
+                    "description": "Created summoner object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SummonerDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Summoner already exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Summoner"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Summoner created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Summoner"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot find summoner from Riot's API.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/champion-rotation": {
+            "get": {
+                "tags": ["champion-rotation"],
+                "operationId": "getChampionRotation",
+                "summary": "Get the champion rotation.",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChampionRotation"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cannot find the champion rotation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "postChampionRotation",
+                "summary": "Update champion rotation from Riot API.",
+                "tags": ["champion-rotation"],
+                "responses": {
+                    "200": {
+                        "description": "Champion rotation updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChampionRotation"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "Champion rotation created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChampionRotation"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Cannot retrieve champion rotation from Riot's API.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SummonerDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Summoner": {
+                "type": "object",
+                "properties": {
+                    "__id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string",
+                        "maxLength": 63
+                    },
+                    "puuid": {
+                        "type": "string",
+                        "maxLength": 78
+                    },
+                    "accountId": {
+                        "type": "string",
+                        "maxLength": 56
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "summonerLevel": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "profileIconId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "revisionDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ChampionRotation": {
+                "type": "object",
+                "properties": {
+                    "__id": {
+                        "type": "string"
+                    },
+                    "freeChampionIds": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "freeChampionIdsForNewPlayers": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "maxNewPlayerLevel": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            }
+        }
+    }
+}
